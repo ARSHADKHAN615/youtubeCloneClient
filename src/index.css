@@ -20,7 +20,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+.active {
+  color: #fdba2c;
+  @apply bg-white/[0.15];
+}
 .load-bar {
   position: fixed;
   top: 0;
