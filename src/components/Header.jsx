@@ -1,24 +1,21 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import ytLogo from "../images/yt-logo.png";
 import ytLogoMobile from "../images/yt-logo-mobile.png";
-
 import { SlMenu } from "react-icons/sl";
 import { IoIosSearch } from "react-icons/io";
 import { RiVideoAddLine } from "react-icons/ri";
-import { FiBell } from "react-icons/fi";
 import { CgClose } from "react-icons/cg";
-
 import { Context } from "../context/contextApi";
-import Loader from "../shared/loader";
+import Loader from "./loader";
 import { useSelector } from "react-redux";
+import { useIsFetching } from '@tanstack/react-query'
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.User);
   const [searchQuery, setSearchQuery] = useState("");
   const { loading, mobileMenu, setMobileMenu } = useContext(Context);
-
+  const isFetching = useIsFetching();
   const navigate = useNavigate();
 
   const searchQueryHandler = (event) => {
@@ -39,7 +36,7 @@ const Header = () => {
 
   return (
     <div className="sticky top-0 z-10 flex flex-row items-center justify-between h-14 px-4 md:px-5 bg-white dark:bg-black">
-      {loading && <Loader />}
+      {loading || isFetching ? <Loader /> : null}
 
       <div className="flex h-5 items-center">
         {pageName !== "video" && (
@@ -95,7 +92,7 @@ const Header = () => {
             </div> */}
           </div>
           <div className="flex h-8 w-8 overflow-hidden rounded-full md:ml-4">
-            <img src={currentUser.img} className="h-full w-full object-cover"/>
+            <img     src={currentUser.img ? currentUser.img : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${currentUser?.name}`} className="h-full w-full object-cover"/>
           </div>
         </div>
       ) : (
