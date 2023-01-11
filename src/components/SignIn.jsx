@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import LeftNav from "./LeftNav";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFailed, loginStart, loginSuccess } from "../slices/userSlice";
-import { NavLink } from "react-router-dom";
-import { provider, auth } from "../firebase";
+import { NavLink, useNavigate } from "react-router-dom";
+import { provider, auth } from "../utils/firebase";
 import { signInWithPopup } from "firebase/auth";
 import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "../api";
 
 const SignIn = () => {
   const currentUser = useSelector((state) => state.User);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [formData, setForm] = useState({
     name: "",
     password: "",
@@ -21,17 +25,19 @@ const SignIn = () => {
 
   const signInGoogle = () => {
     dispatch(loginStart());
+    queryClient.invalidateQueries(["auth"]);
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
-          .post(import.meta.env.VITE_API_URL + "auth/google", {
+        api
+          .post("auth/google", {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,
-          }, { withCredentials: true ,credentials: 'include'})
+          })
           .then((res) => {
             dispatch(loginSuccess(res.data));
-            console.log(res);
+            
+            navigate('/');
           })
           .catch((error) => {
             dispatch(loginFailed());
@@ -46,6 +52,7 @@ const SignIn = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    queryClient.invalidateQueries(["auth"]);
     try {
       dispatch(loginStart());
       const response = await fetch(
@@ -58,10 +65,13 @@ const SignIn = () => {
         }
       );
       const parseRes = await response.json();
-      console.log(parseRes);
+      // console.log(parseRes);
       if (response.ok) {
         dispatch(loginSuccess(parseRes));
+        
+        navigate('/');
       } else {
+        alert(parseRes.message);
         dispatch(loginFailed());
       }
     } catch (err) {

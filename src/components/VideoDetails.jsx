@@ -54,33 +54,25 @@ const VideoDetails = () => {
 
   const LikeMutation = useMutation({
     mutationFn: async () => {
-      return await axios.put(
-        import.meta.env.VITE_API_URL + `user/like/${id}`,
-        { userId: currentUser._id },
-        { withCredentials: true, credentials: "include" }
-      );
+      return await api.put(`user/like/${id}`,{ userId: currentUser?._id },);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["videoDetail"]);
     },
     onError: (error) => {
-      console.log("Error", error);
+      alert(error.response.data.message);
     },
   });
 
   const dislikeMutation = useMutation({
     mutationFn: async () => {
-      return await axios.put(
-        import.meta.env.VITE_API_URL + `/user/dislike/${id}`,
-        { userId: currentUser._id },
-        { withCredentials: true, credentials: "include" }
-      );
+        return await api.put(`/user/dislike/${id}`,{ userId: currentUser?._id },);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["videoDetail"]);
     },
     onError: (error) => {
-      console.log("Error");
+      alert(error.response.data.message);
     },
   });
 
@@ -94,7 +86,7 @@ const VideoDetails = () => {
       queryClient.invalidateQueries(["channelDetails"]);
     },
     onError: (error) => {
-      console.log("Error");
+      alert(error.response.data.message);
     },
   });
 
@@ -108,7 +100,7 @@ const VideoDetails = () => {
       queryClient.invalidateQueries(["channelDetails"]);
     },
     onError: (error) => {
-      console.log("Error");
+      alert(error.response.data.message);
     },
   });
 

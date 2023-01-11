@@ -49,7 +49,7 @@ const Comments = ({ videoId }) => {
           <img
             className="w-8 h-8 rounded-full object-cover"
             src={
-              currentUser.img
+              currentUser?.img
                 ? currentUser.img
                 : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${currentUser?.name}`
             }

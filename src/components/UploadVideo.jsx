@@ -6,7 +6,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import app from "../firebase";
+import app from "../utils/firebase";
 import { api } from "../api";
 import { useNavigate } from "react-router-dom";
 
