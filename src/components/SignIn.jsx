@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import LeftNav from "./LeftNav";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFailed, loginStart, loginSuccess } from "../slices/userSlice";
-import { NavLink } from "react-router-dom";
-import { provider, auth } from "../firebase";
+import { NavLink, useNavigate } from "react-router-dom";
+import { provider, auth } from "../utils/firebase";
 import { signInWithPopup } from "firebase/auth";
+import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "../api";
+
 const SignIn = () => {
   const currentUser = useSelector((state) => state.User);
   const dispatch = useDispatch();
-  console.log(currentUser);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [formData, setForm] = useState({
     name: "",
     password: "",
@@ -17,15 +22,37 @@ const SignIn = () => {
   const onChange = (e) => {
     setForm({ ...formData, [e.target.name]: e.target.value });
   };
+
   const signInGoogle = () => {
-    signInWithPopup(auth, provider).then((result) => {
-    console.log(result);
-    }).catch((error) => {
-     console.log(error);
-    });
-  }
+    dispatch(loginStart());
+    queryClient.invalidateQueries(["auth"]);
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        api
+          .post("auth/google", {
+            name: result.user.displayName,
+            email: result.user.email,
+            img: result.user.photoURL,
+          })
+          .then((res) => {
+            dispatch(loginSuccess(res.data));
+            
+            navigate('/');
+          })
+          .catch((error) => {
+            dispatch(loginFailed());
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        dispatch(loginFailed());
+        console.log(error);
+      });
+  };
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    queryClient.invalidateQueries(["auth"]);
     try {
       dispatch(loginStart());
       const response = await fetch(
@@ -33,15 +60,18 @@ const SignIn = () => {
         {
           method: "POST",
           credentials: "include",
-          headers: { "Content-Type": "application/json"},
-          body: JSON.stringify(formData),          
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         }
       );
       const parseRes = await response.json();
-      console.log(parseRes);
+      // console.log(parseRes);
       if (response.ok) {
         dispatch(loginSuccess(parseRes));
+        
+        navigate('/');
       } else {
+        alert(parseRes.message);
         dispatch(loginFailed());
       }
     } catch (err) {
@@ -49,6 +79,7 @@ const SignIn = () => {
       console.error(err.message);
     }
   };
+
   return (
     <div className="flex flex-row h-[calc(100%-56px)] ">
       <LeftNav />
@@ -63,7 +94,10 @@ const SignIn = () => {
                 {/* social login button */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center justify-center w-full h-12 space-x-2">
-                    <button className="flex items-center justify-center w-full h-full space-x-2 text-sm font-medium text-white transition duration-150 ease-in rounded-md border-2 border-gray-600 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600" onClick={()=>signInGoogle()}>
+                    <button
+                      className="flex items-center justify-center w-full h-full space-x-2 text-sm font-medium text-white transition duration-150 ease-in rounded-md border-2 border-gray-600 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600"
+                      onClick={() => signInGoogle()}
+                    >
                       <svg
                         className="h-6 w-6 fill-current text-gray-700"
                         xmlns="http://www.w3.org/2000/svg"
