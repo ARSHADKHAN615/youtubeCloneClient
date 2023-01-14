@@ -10,6 +10,7 @@ import SignUp from "./components/SignUp";
 import UploadVideo from "./components/UploadVideo";
 import Cookies from "js-cookie";
 import AuthWrap from "./wrapper/AuthWrap";
+import GuestWrap from "./wrapper/GuestWrap";
 
 const App = () => {
   return (
@@ -29,8 +30,17 @@ const App = () => {
                 </AuthWrap>
               }
             />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={
+              <GuestWrap>
+                <SignIn /> 
+              </GuestWrap>
+              }
+            />
+            <Route path="/signup" element={
+              <GuestWrap>
+                <SignUp />
+              </GuestWrap>
+            } />
             <Route
               path="/upload"
               element={
@@ -44,6 +54,7 @@ const App = () => {
               element={<SearchResult />}
             />
             <Route path="/video/:id" element={<VideoDetails />} />
+            <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </div>
       </BrowserRouter>

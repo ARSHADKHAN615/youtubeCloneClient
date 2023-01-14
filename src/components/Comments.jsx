@@ -24,7 +24,7 @@ const Comments = ({ videoId }) => {
     },
   });
 
-  const mutation = useMutation({
+  const { mutate: mutation ,isLoading:commentBtn} = useMutation({
     mutationFn: async (formData) => {
       return await api.post("comment", formData);
     },
@@ -33,13 +33,13 @@ const Comments = ({ videoId }) => {
       formData.des = "";
     },
     onError: (error) => {
-      console.log("Error", error);
+      alert(error.response.data.message);
     },
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    mutation.mutate(formData);
+    mutation(formData);
   };
 
   return (
@@ -73,8 +73,8 @@ const Comments = ({ videoId }) => {
               Cancel
             </button>
             <button
-              className="bg-blue-500 text-black px-3 py-1 rounded-md text-sm font-semibold ml-2"
-              type="submit"
+              className="bg-blue-500 text-black px-3 py-1 rounded-md text-sm font-semibold ml-2 disabled:opacity-50"
+              type="submit" disabled={commentBtn}
             >
               Post
             </button>
