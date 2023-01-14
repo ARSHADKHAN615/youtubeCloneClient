@@ -18,12 +18,12 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
-        <App />
-      </QueryClientProvider>
-    </PersistGate>
-  </Provider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={true} />
+          <App />
+        </QueryClientProvider>
+      </PersistGate>
+    </Provider>
 );

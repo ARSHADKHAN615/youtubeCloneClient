@@ -83,9 +83,9 @@ const UploadVideo = () => {
     <div className="flex flex-row h-[calc(100%-56px)] ">
       <LeftNav />
       <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full">
-        <section className="bg-black dark:bg-gray-900">
+        <section className="bg-black">
           <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div className="w-full bg-black rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Upload Video a new video
@@ -112,10 +112,18 @@ const UploadVideo = () => {
                       required
                       onChange={(e) => setVideoFile(e.target.files[0])}
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {videoPerc > 0 && "Uploading... " + videoPerc + "%"}
-                    </p>
+                    {videoPerc > 0 && (
+                      <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700 overflow-auto mt-1 transition-all duration-500 ease-in-out">
+                        <div
+                          style={{ width: videoPerc + "%" }}
+                          className={videoPerc == 100 ? "bg-green-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full transition-all duration-500 ease-in-out" : "bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full transition-all duration-500 ease-in-out"}
+                        >
+                          {videoPerc == 100 ? "Uploaded" : videoPerc + "%"}
+                        </div>
+                      </div>
+                    )}
                   </div>
+
                   <div>
                     <label
                       htmlFor="title"
@@ -190,15 +198,22 @@ const UploadVideo = () => {
                       value={formData.thumbnail}
                       onChange={(e) => setImageFile(e.target.files[0])}
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {imgPerc > 0 && "Uploading... " + imgPerc + "%"}
-                    </p>
+                    {imgPerc > 0 && (
+                      <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700 overflow-auto mt-1 transition-all duration-500">
+                        <div
+                          style={{ width: imgPerc + "%" }}
+                          className={imgPerc == 100 ? "bg-green-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" : "bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"}
+                        >
+                          {imgPerc == 100 ? "Uploaded" : imgPerc + "%"}
+                          </div>
+                      </div>
+                    )}
                   </div>
                   <button
                     type="submit"
                     className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:opacity-50"
                     disabled={
-                      formData.imgUrl === "" || formData.videoUrl === ""
+                      formData.imgUrl === "" || formData.videoUrl === "" || formData.title === "" || formData.des === "" || tags == [] || formData.thumbnail === ""
                     }
                   >
                     Upload

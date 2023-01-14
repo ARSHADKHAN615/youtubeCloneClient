@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ReactPlayer from "react-player/youtube";
-import { BsBell, BsFillBellFill, BsFillCheckCircleFill } from "react-icons/bs";
+import { BsBell, BsFillCheckCircleFill } from "react-icons/bs";
 import {
   AiFillBell,
   AiFillDislike,
@@ -12,7 +11,6 @@ import {
 import { abbreviateNumber } from "js-abbreviation-number";
 import SuggestionVideoCard from "./SuggestionVideoCard";
 import Comments from "./Comments";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "timeago.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +28,14 @@ const VideoDetails = () => {
   const { currentUser } = useSelector((state) => state.User);
   const dispatch = useDispatch();
 
+  // Video Views
+  const addView = async () => {
+    await api.put(`video/view/${id}`);
+  };
+  useEffect(() => {
+    addView();
+  }, [id]);
+  
   // Video Details
   const { data: video, isLoading } = useQuery({
     queryKey: ["videoDetail", id],
@@ -52,9 +58,9 @@ const VideoDetails = () => {
     enabled: !!videoTags,
   });
 
-  const LikeMutation = useMutation({
+  const { mutate: likeMutation, isLoading: likeBtn } = useMutation({
     mutationFn: async () => {
-      return await api.put(`user/like/${id}`,{ userId: currentUser?._id },);
+      return await api.put(`user/like/${id}`, { userId: currentUser?._id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["videoDetail"]);
@@ -64,9 +70,9 @@ const VideoDetails = () => {
     },
   });
 
-  const dislikeMutation = useMutation({
+  const { mutate: dislikeMutation, isLoading: dislikeBtn } = useMutation({
     mutationFn: async () => {
-        return await api.put(`/user/dislike/${id}`,{ userId: currentUser?._id },);
+      return await api.put(`/user/dislike/${id}`, { userId: currentUser?._id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["videoDetail"]);
@@ -76,7 +82,7 @@ const VideoDetails = () => {
     },
   });
 
-  const subscribeMutation = useMutation({
+  const { mutate: subscribeMutation, isLoading: subscribeBtn } = useMutation({
     mutationFn: async (channelId) => {
       await api.put(`user/sub/${channelId}`);
       const { data } = await api.get(`user/find/${currentUser._id}`);
@@ -90,19 +96,20 @@ const VideoDetails = () => {
     },
   });
 
-  const unsubscribeMutation = useMutation({
-    mutationFn: async (channelId) => {
-      await api.put(`user/unSub/${channelId}`);
-      const { data } = await api.get(`user/find/${currentUser._id}`);
-      dispatch(loginSuccess(data));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["channelDetails"]);
-    },
-    onError: (error) => {
-      alert(error.response.data.message);
-    },
-  });
+  const { mutate: unsubscribeMutation, isLoading: unsubscribeBtn } =
+    useMutation({
+      mutationFn: async (channelId) => {
+        await api.put(`user/unSub/${channelId}`);
+        const { data } = await api.get(`user/find/${currentUser._id}`);
+        dispatch(loginSuccess(data));
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["channelDetails"]);
+      },
+      onError: (error) => {
+        alert(error.response.data.message);
+      },
+    });
 
   return (
     <div className="flex justify-center flex-row h-[calc(100%-56px)] bg-black">
@@ -115,16 +122,24 @@ const VideoDetails = () => {
               controls
             />
           </div>
-          <div className="text-white font-bold text-sm md:text-xl mt-4">
-            {isLoading ? "Loading..." : video?.title}
-          </div>
-          <div className="flex text-[12px] font-semibold text-white/[0.7] ">
-            <span>{`${abbreviateNumber(video?.views, 2)} views`}</span>
-            <span className="flex text-[24px] leading-none font-bold text-white/[0.7] relative top-[-10px] mx-1">
-              .
-            </span>
-            <span className="truncate">{format(video?.createdAt)}</span>
-          </div>
+          {isLoading ? (
+            <div className="text-white font-bold text-sm md:text-xl mt-4">
+              Loading...
+            </div>
+          ) : (
+            <>
+              <div className="text-white font-bold text-sm md:text-xl mt-4">
+                {video?.title}
+              </div>
+              <div className="flex text-[12px] font-semibold text-white/[0.7] ">
+                <span>{`${abbreviateNumber(video?.views?.length, 2)} views`}</span>
+                <span className="flex text-[24px] leading-none font-bold text-white/[0.7] relative top-[-10px] mx-1">
+                  .
+                </span>
+                <span className="truncate">{format(video?.createdAt)}</span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between flex-col md:flex-row mt-4">
             <div className="flex">
               <div className="flex items-start">
@@ -155,8 +170,9 @@ const VideoDetails = () => {
               <div className="flex ml-3">
                 {currentUser?.subscribedUser?.includes(channel?._id) ? (
                   <button
-                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]"
-                    onClick={() => unsubscribeMutation.mutate(channel?._id)}
+                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                    onClick={() => unsubscribeMutation(channel?._id)}
+                    disabled={unsubscribeBtn}
                   >
                     <AiFillBell className="text-white text-[20px] mr-2" />
                     <span className="text-white text-sm font-semibold">
@@ -165,8 +181,9 @@ const VideoDetails = () => {
                   </button>
                 ) : (
                   <button
-                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]"
-                    onClick={() => subscribeMutation.mutate(channel?._id)}
+                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                    onClick={() => subscribeMutation(channel?._id)}
+                    disabled={subscribeBtn}
                   >
                     <BsBell className="text-white text-[20px] mr-2" />
                     <span className="text-white text-sm font-semibold">
@@ -178,8 +195,9 @@ const VideoDetails = () => {
             </div>
             <div className="flex text-white mt-4 md:mt-0">
               <button
-                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]"
-                onClick={() => LikeMutation.mutate()}
+                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                onClick={() => likeMutation()}
+                disabled={likeBtn}
               >
                 {video?.likes?.includes(currentUser?._id) ? (
                   <AiFillLike className="text-white text-[20px] mr-2" />
@@ -192,8 +210,9 @@ const VideoDetails = () => {
               </button>
 
               <button
-                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-3"
-                onClick={() => dislikeMutation.mutate()}
+                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-3 disabled:opacity-50"
+                onClick={() => dislikeMutation()}
+                disabled={dislikeBtn}
               >
                 {video?.dislikes?.includes(currentUser?._id) ? (
                   <AiFillDislike className="text-white text-[20px] mr-2" />

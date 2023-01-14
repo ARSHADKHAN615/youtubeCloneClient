@@ -10,7 +10,7 @@ const LeftNav = () => {
 
   return (
     <div
-      className={`md:block w-[240px] overflow-y-auto h-full py-4 bg-black absolute md:relative z-10 translate-x-[-240px] md:translate-x-0 transition-all scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full  ${
+      className={`md:block w-[240px] overflow-y-auto h-full py-4 bg-black absolute md:relative z-10 translate-x-[-240px] md:translate-x-0 transition-all scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full ${
         mobileMenu ? "translate-x-0" : ""
       }`}
     >
@@ -31,8 +31,25 @@ const LeftNav = () => {
         {/* signin button like youtube */}
         {!currentUser && (
           <>
-          <hr className="my-5 border-white/[0.2]" />
-            {" "}
+            <hr className="my-5 border-white/[0.2]" />
+            <span className="text-white">Subscription</span>
+            <div className="flex items-center mt-3 flex-col">
+              <div className="text-white text-sm cursor-pointer h-10 w-full flex items-center p-3 my-1 rounded-lg hover:bg-white/[0.15]">
+                <span className="text-xl mr-5">
+                  {" "}
+                  <div className="flex h-9 w-9 rounded-full overflow-hidden">
+                    <img
+                      className="h-full w-full object-cover"
+                      src="https://ui-avatars.com/api/?background=0D8ABC&color=fff&name="
+                    />
+                  </div>
+                </span>
+                Channel 1
+              </div>
+            </div>
+
+            <hr className="my-5 border-white/[0.2]" />
+
             <NavLink
               to="/signin"
               className="text-white text-sm cursor-pointer h-10 flex items-center px-3 mb-[1px] rounded-lg hover:bg-white/[0.15]"
@@ -52,7 +69,7 @@ const LeftNav = () => {
               </span>
               Sign In
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/signup"
               className="text-white text-sm cursor-pointer h-10 flex items-center px-3 mb-[1px] rounded-lg hover:bg-white/[0.15]"
             >
@@ -70,7 +87,7 @@ const LeftNav = () => {
                 </svg>
               </span>
               Sign Up
-            </NavLink>
+            </NavLink> */}
           </>
         )}
 
