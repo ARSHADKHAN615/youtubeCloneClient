@@ -170,7 +170,7 @@ const VideoDetails = () => {
               <div className="flex ml-3">
                 {currentUser?.subscribedUser?.includes(channel?._id) ? (
                   <button
-                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/50 disabled:opacity-50"
                     onClick={() => unsubscribeMutation(channel?._id)}
                     disabled={unsubscribeBtn}
                   >
@@ -181,7 +181,7 @@ const VideoDetails = () => {
                   </button>
                 ) : (
                   <button
-                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                    className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/50 disabled:opacity-50"
                     onClick={() => subscribeMutation(channel?._id)}
                     disabled={subscribeBtn}
                   >
@@ -195,7 +195,7 @@ const VideoDetails = () => {
             </div>
             <div className="flex text-white mt-4 md:mt-0">
               <button
-                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] disabled:opacity-50"
+                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/50 disabled:opacity-50"
                 onClick={() => likeMutation()}
                 disabled={likeBtn}
               >
@@ -210,7 +210,7 @@ const VideoDetails = () => {
               </button>
 
               <button
-                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-3 disabled:opacity-50"
+                className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/50 ml-3 disabled:opacity-50"
                 onClick={() => dislikeMutation()}
                 disabled={dislikeBtn}
               >

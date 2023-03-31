@@ -115,10 +115,10 @@ const SignUp = () => {
   return (
     <div className="flex flex-row h-[calc(100%-56px)] ">
       <LeftNav />
-      <div className="grow w-[calc(100%-240px)] h-full overflow-hidden bg-black ">
+      <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full">
         <section className="bg-black">
-          <div className="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
-            <div className="w-full bg-black rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
+          <div className="flex flex-col items-center justify-center px-6 mx-auto lg:py-0">
+            <div className="w-full bg-black rounded-lg dark:border my-4 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Create an account

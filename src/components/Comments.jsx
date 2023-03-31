@@ -39,6 +39,8 @@ const Comments = ({ videoId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!currentUser) return alert("Please login to comment");
+    if(formData.des.length === 0) return alert("Please add a comment");
     mutation(formData);
   };
 

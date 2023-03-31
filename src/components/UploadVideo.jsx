@@ -84,11 +84,11 @@ const UploadVideo = () => {
       <LeftNav />
       <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full">
         <section className="bg-black">
-          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <div className="w-full bg-black rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
-              <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+            <div className="w-full bg-black rounded-lg dark:border my-4 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
+              <div className="p-6 space-y-4 md:space-y-6 sm:p-8 my-4">
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                  Upload Video a new video
+                  Upload a new video
                 </h1>
                 <form
                   className="space-y-4 md:space-y-6"
@@ -174,7 +174,7 @@ const UploadVideo = () => {
                       type="text"
                       name="tags"
                       id="tags"
-                      placeholder="Video Tags"
+                      placeholder="Add tags separated by comma"
                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       required
                       onChange={handleTags}

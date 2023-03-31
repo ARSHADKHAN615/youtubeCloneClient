@@ -31,7 +31,7 @@ const LeftNav = () => {
         {/* signin button like youtube */}
         {!currentUser && (
           <>
-            <hr className="my-5 border-white/[0.2]" />
+            {/* <hr className="my-5 border-white/[0.2]" />
             <span className="text-white">Subscription</span>
             <div className="flex items-center mt-3 flex-col">
               <div className="text-white text-sm cursor-pointer h-10 w-full flex items-center p-3 my-1 rounded-lg hover:bg-white/[0.15]">
@@ -46,7 +46,7 @@ const LeftNav = () => {
                 </span>
                 Channel 1
               </div>
-            </div>
+            </div> */}
 
             <hr className="my-5 border-white/[0.2]" />
 

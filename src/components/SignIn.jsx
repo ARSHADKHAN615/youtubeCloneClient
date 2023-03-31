@@ -3,11 +3,7 @@ import LeftNav from "./LeftNav";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFailed, loginStart, loginSuccess } from "../slices/userSlice";
 import { NavLink, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import { provider, auth } from "../firebase";
-=======
 import { provider, auth } from "../utils/firebase";
->>>>>>> 975adf9f6c2bda805c57e1f84d7b9437a5dc2293
 import { signInWithPopup } from "firebase/auth";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,15 +11,9 @@ import { api } from "../api";
 
 const SignIn = () => {
   const currentUser = useSelector((state) => state.User);
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
   const [loadingForGoogle, setLoadingForGoogle] = useState(false);
-
-
->>>>>>> 975adf9f6c2bda805c57e1f84d7b9437a5dc2293
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [formData, setForm] = useState({
     name: "",
@@ -73,10 +63,6 @@ const SignIn = () => {
       // console.log(parseRes);
       if (response.ok) {
         dispatch(loginSuccess(parseRes));
-<<<<<<< HEAD
-=======
-        
->>>>>>> 975adf9f6c2bda805c57e1f84d7b9437a5dc2293
         navigate('/');
       } else {
         alert(parseRes.message);
@@ -93,8 +79,8 @@ const SignIn = () => {
       <LeftNav />
       <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black scrollbar-thin scrollbar-thumb-gray-600 scrollbar-thumb-rounded-full">
         <section className="bg-black">
-          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <div className="w-full bg-black rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
+          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+            <div className="w-full bg-black rounded-lg dark:border my-4 sm:max-w-md xl:p-0  dark:border-gray-600 shadow-2xl shadow-slate-900">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
