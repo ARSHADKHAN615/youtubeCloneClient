@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import LeftNav from "./LeftNav";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFailed, loginStart, loginSuccess } from "../slices/userSlice";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { provider, auth } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 const SignIn = () => {
   const currentUser = useSelector((state) => state.User);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   console.log(currentUser);
   const [formData, setForm] = useState({
@@ -41,6 +42,7 @@ const SignIn = () => {
       console.log(parseRes);
       if (response.ok) {
         dispatch(loginSuccess(parseRes));
+        navigate('/');
       } else {
         dispatch(loginFailed());
       }
