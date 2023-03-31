@@ -1,23 +1,49 @@
 import React from "react";
+import { format } from "timeago.js";
+import { api, getChannelDetails } from "../api";
 
-const Comment = () => {
+const Comment = ({ comment }) => {
+  const [commentUser, setCommentUser] = React.useState(null);
+  const getUser = async () => {
+    try {
+      getChannelDetails(comment.userId).then((data) => {
+        setCommentUser(data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getUser();
+  }, [comment._id]);
+
   return (
-    <div className="m-4">
+    <div className="m-4 my-8">
       <div className="flex flex-col ml-4">
         <div className="flex items-center">
           <img
             className="w-8 h-8 rounded-full object-cover mr-2"
-            src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo"
+            src={
+              commentUser?.img
+                ? commentUser?.img
+                : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${commentUser?.name}`
+            }
           />
-          <h1 className="text-sm font-semibold text-white">John Doe</h1>
-          <span className="text-xs text-gray-400 ml-2">1 day ago</span>
+          <div>
+            <span className="flex items-center">
+              <h1 className="text-sm font-semibold text-white">
+                {commentUser?.name}
+              </h1>
+              <span className="text-xs text-gray-400 ml-2">
+                {format(comment?.createdAt)}
+              </span>
+            </span>
+            <p className="text-sm text-gray-300 mt-1 line-clamp-2">
+              {comment.des}
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-gray-300 mt-1 line-clamp-2">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, ex
-          laboriosam ipsam aliquam voluptatem perferendis provident modi, sequi
-          tempore reiciendis quod, optio ullam cumque? Quidem numquam sint
-          mollitia totam reiciendis?
-        </p>
       </div>
     </div>
   );

@@ -1,26 +1,26 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import ytLogo from "../images/yt-logo.png";
 import ytLogoMobile from "../images/yt-logo-mobile.png";
-
 import { SlMenu } from "react-icons/sl";
 import { IoIosSearch } from "react-icons/io";
 import { RiVideoAddLine } from "react-icons/ri";
-import { FiBell } from "react-icons/fi";
 import { CgClose } from "react-icons/cg";
-
 import { Context } from "../context/contextApi";
-import Loader from "../shared/loader";
-import { useSelector } from "react-redux";
+import Loader from "./loader";
+import { useDispatch, useSelector } from "react-redux";
+import { useIsFetching } from "@tanstack/react-query";
+import { AiOutlineLogout } from "react-icons/ai";
+import { logout } from "../slices/userSlice";
+import { api } from "../api";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.User);
   const [searchQuery, setSearchQuery] = useState("");
   const { loading, mobileMenu, setMobileMenu } = useContext(Context);
-
+  const isFetching = useIsFetching();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const searchQueryHandler = (event) => {
     if (
       (event?.key === "Enter" || event === "searchButton") &&
@@ -33,13 +33,25 @@ const Header = () => {
   const mobileMenuToggle = () => {
     setMobileMenu(!mobileMenu);
   };
+  const logoutHandler = () => {
+    api
+      .get("/auth/logout")
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(logout());
+          document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          navigate("/signin", { replace: true });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   const { pathname } = useLocation();
   const pageName = pathname?.split("/")?.filter(Boolean)?.[0];
 
   return (
     <div className="sticky top-0 z-10 flex flex-row items-center justify-between h-14 px-4 md:px-5 bg-white dark:bg-black">
-      {loading && <Loader />}
+      {loading || isFetching ? <Loader /> : null}
 
       <div className="flex h-5 items-center">
         {pageName !== "video" && (
@@ -55,12 +67,12 @@ const Header = () => {
           </div>
         )}
         <Link to="/" className="flex h-5 items-center">
-          <img
+          {/* <img
             className="h-full hidden dark:md:block"
             src={ytLogo}
             alt="Youtube"
-          />
-          <img className="h-full md:hidden" src={ytLogoMobile} alt="Youtube" />
+          /> */}
+          <span className="text-[#303030] dark:text-white font-bold text-xl">AK Tube</span>
         </Link>
       </div>
       <div className="group flex items-center">
@@ -87,21 +99,36 @@ const Header = () => {
       {currentUser ? (
         <div className="flex items-center">
           <div className="hidden md:flex">
-            <button className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-[#303030]/[0.6]" onClick={()=>navigate("/upload")}>
+            <button
+              className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-[#303030]/[0.6]"
+              onClick={() => navigate("/upload")}
+            >
               <RiVideoAddLine className="text-white text-xl cursor-pointer" />
             </button>
-            {/* <div className="flex items-center justify-center ml-2 h-10 w-10 rounded-full hover:bg-[#303030]/[0.6]">
-              <FiBell className="text-white text-xl cursor-pointer" />
-            </div> */}
+          </div>
+          <div className="hidden md:flex">
+            <button
+              className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-[#303030]/[0.6]"
+              onClick={logoutHandler}
+            >
+              <AiOutlineLogout className="text-white text-xl cursor-pointer" />
+            </button>
           </div>
           <div className="flex h-8 w-8 overflow-hidden rounded-full md:ml-4">
-            <img src={currentUser.img} className="h-full w-full object-cover"/>
+            <img
+              src={
+                currentUser.img
+                  ? currentUser.img
+                  : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${currentUser?.name}`
+              }
+              className="h-full w-full object-cover"
+            />
           </div>
         </div>
       ) : (
         <button
           className="border-2 border-blue-700 text-blue-600 px-5 py-1 rounded-md font-bold"
-          onClick={()=>navigate("/signin")}
+          onClick={() => navigate("/signin")}
         >
           Sign In
         </button>
